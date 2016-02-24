@@ -62,3 +62,35 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
         source "$HOME/.ssh/agent" 
     fi
 fi
+
+# Dotfiles update nofication
+pushd > /dev/null
+if [ -d "dotfiles" ]; then
+    cd "dotfiles"
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        git remote update > /dev/null
+        LOCAL=$(git rev-parse @)
+        REMOTE=$(git rev-parse @{u})
+        BASE=$(git merge-base @ @{u})
+
+        if [ $LOCAL = $REMOTE ]; then
+            #echo "Up-to-date"
+        elif [ $LOCAL = $BASE ]; then
+            echo "Dotfiles are out of date! Run update-dotfiles"
+        fi
+        #elif [ $REMOTE = $BASE ]; then
+        #    echo "Need to push"
+        #else
+        #    echo "Diverged"
+        #fi
+    fi
+fi
+popd > /dev/null
+
+function update-dotfiles() {
+    pushd > /dev/null
+    cd "$HOME/dotfiles"
+    git pull
+    make install
+    popd > /dev/null
+}

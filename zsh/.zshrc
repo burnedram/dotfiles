@@ -20,7 +20,7 @@ colors
 # RAINBOW COLORS
 RAINBOWPROMPT="$(print -P "%n@%m")"
 RAINBOWMIN=16
-RAINBOWMAX=$((255 - RAINBOWMIN))
+RAINBOWMAX=$((231 - RAINBOWMIN))
 RAINBOWCOLOR=10
 STATICPROMPT="%{$fg_no_bold[yellow]%}%d"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
 

@@ -18,10 +18,13 @@ autoload -U colors
 colors
 
 # RAINBOW COLORS
-RAINBOWPROMPT="$(print -P "%n@%m")"
-RAINBOWMIN=16
+RAINBOWPROMPT="$(print -P "%n")"
+RAINBOWMIN=22
 RAINBOWMAX=$((231 - RAINBOWMIN))
-RAINBOWCOLOR=10
+RAINBOWCOLOR=0
+HOSTNAMESTRING="$(print -P "%m")"
+HOSTNAMECOLOR="$(echo $((0x$(echo $HOSTNAMESTRING | md5sum | cut -c1-8) % RAINBOWMAX)))"
+RAINBOWHOSTNAME="%{%{[38;5;${HOSTNAMECOLOR}m%}%}$HOSTNAMESTRING"
 STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
 
 PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROMPT" 
@@ -36,7 +39,7 @@ function precmd() {
     if [ "$RAINBOWCOLOR" -gt "$RAINBOWMAX" ]; then
         RAINBOWCOLOR=0
     fi
-    PROMPT="$rainbow $STATICPROMPT"
+    PROMPT="$rainbow%{$reset_color%}@$RAINBOWHOSTNAME $STATICPROMPT"
 }
 # END RAINBOW COLORS
 

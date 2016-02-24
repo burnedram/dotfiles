@@ -22,10 +22,10 @@ RAINBOWPROMPT="$(print -P "%n@%m")"
 RAINBOWMIN=16
 RAINBOWMAX=$((231 - RAINBOWMIN))
 RAINBOWCOLOR=10
-STATICPROMPT="%{$fg_no_bold[yellow]%}%d"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
+STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
 
 PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROMPT" 
-RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%K{red}%}%?)%{%k%}%{$reset_color%}]"
+RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
 
 function precmd() {
     local rainbow=""

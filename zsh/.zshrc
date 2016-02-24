@@ -50,7 +50,7 @@ export LANGUAGE=en_US.UTF-8
 
 # Start or connect to a ssh-agent
 if [ -z "$SSH_AUTH_SOCK" ]; then
-    AGENTPID=$(ps -A | grep -m 1 ssh-agent | awk '{print $1}')
+    AGENTPID=$(ps -e | grep -m 1 ssh-agent | awk '{print $1}')
     if [ -z "$AGENTPID" ]; then
         ssh-agent | sed 's/^echo/#echo/' > "$HOME/.ssh/agent"
         source "$HOME/.ssh/agent" 

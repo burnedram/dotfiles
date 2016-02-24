@@ -90,8 +90,9 @@ popd > /dev/null
 function update-dotfiles() {
     pushd > /dev/null
     cd "$HOME/dotfiles"
-    git pull
-    make install
-    popd > /dev/null
-    echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
+    if git pull; then
+        make install
+        popd > /dev/null
+        echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
+    fi
 }

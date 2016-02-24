@@ -17,32 +17,6 @@ compinit
 autoload -U colors
 colors
 
-# RAINBOW COLORS
-RAINBOWPROMPT="$(print -P "%n")"
-RAINBOWMIN=22
-RAINBOWMAX=$((231 - RAINBOWMIN))
-RAINBOWCOLOR=0
-HOSTNAMESTRING="$(print -P "%m")"
-HOSTNAMECOLOR="$(echo $((0x$(echo $HOSTNAMESTRING | md5sum | cut -c1-8) % RAINBOWMAX)))"
-RAINBOWHOSTNAME="%{%{[38;5;${HOSTNAMECOLOR}m%}%}$HOSTNAMESTRING"
-STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
-
-PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROMPT" 
-RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
-
-function precmd() {
-    local rainbow=""
-    for i in {000..${#RAINBOWPROMPT}}; do
-        rainbow="$rainbow%{%{[38;5;$(((i+RAINBOWCOLOR)%RAINBOWMAX + RAINBOWMIN))m%}%}${RAINBOWPROMPT:$i:1}"
-    done
-    ((RAINBOWCOLOR++))
-    if [ "$RAINBOWCOLOR" -gt "$RAINBOWMAX" ]; then
-        RAINBOWCOLOR=0
-    fi
-    PROMPT="$rainbow%{$reset_color%}@$RAINBOWHOSTNAME $STATICPROMPT"
-}
-# END RAINBOW COLORS
-
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
 bindkey '^r' history-incremental-search-backward
@@ -50,6 +24,11 @@ bindkey '^r' history-incremental-search-backward
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
+
+# Load local config
+if [ -s ".zshrc_local" ]; then
+    source ".zshrc_local"
+fi
 
 # Start or connect to a ssh-agent
 if [ -z "$SSH_AUTH_SOCK" ]; then
@@ -99,3 +78,29 @@ function update-dotfiles() {
         echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
     fi
 }
+
+# RAINBOW COLORS
+RAINBOWPROMPT="$(print -P "%n")"
+RAINBOWMIN=22
+RAINBOWMAX=$((231 - RAINBOWMIN))
+RAINBOWCOLOR=0
+HOSTNAMESTRING="$(print -P "%m")"
+HOSTNAMECOLOR="$(echo $((0x$(echo $HOSTNAMESTRING | md5sum | cut -c1-8) % RAINBOWMAX)))"
+RAINBOWHOSTNAME="%{%{[38;5;${HOSTNAMECOLOR}m%}%}$HOSTNAMESTRING"
+STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
+
+PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROMPT" 
+RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
+
+function precmd() {
+    local rainbow=""
+    for i in {000..${#RAINBOWPROMPT}}; do
+        rainbow="$rainbow%{%{[38;5;$(((i+RAINBOWCOLOR)%RAINBOWMAX + RAINBOWMIN))m%}%}${RAINBOWPROMPT:$i:1}"
+    done
+    ((RAINBOWCOLOR++))
+    if [ "$RAINBOWCOLOR" -gt "$RAINBOWMAX" ]; then
+        RAINBOWCOLOR=0
+    fi
+    PROMPT="$rainbow%{$reset_color%}@$RAINBOWHOSTNAME $STATICPROMPT"
+}
+# END RAINBOW COLORS

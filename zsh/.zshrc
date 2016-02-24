@@ -76,7 +76,7 @@ if [ -d "dotfiles" ]; then
         if [ $LOCAL = $REMOTE ]; then
             #echo "Up-to-date"
         elif [ $LOCAL = $BASE ]; then
-            echo "Dotfiles are out of date! Run update-dotfiles"
+            echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
         fi
         #elif [ $REMOTE = $BASE ]; then
         #    echo "Need to push"

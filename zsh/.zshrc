@@ -31,7 +31,7 @@ if [ -s "$HOME/.zshrc_local" ]; then
 fi
 
 # Start or connect to a ssh-agent
-"$HOME/.ssh/get_agent.sh"
+source "$HOME/.ssh/get_agent.sh"
 
 # Dotfiles update nofication
 pushd > /dev/null

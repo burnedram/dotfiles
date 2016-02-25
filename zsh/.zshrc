@@ -1,5 +1,5 @@
 # Lines configured by zsh-newuser-install
-HISTFILE=~/.histfile
+HISTFILE=$HOME/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt nomatch
@@ -26,17 +26,17 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
 # Load local config
-if [ -s ".zshrc_local" ]; then
-    source ".zshrc_local"
+if [ -s "$HOME/.zshrc_local" ]; then
+    source "$HOME/.zshrc_local"
 fi
 
 # Start or connect to a ssh-agent
-source ".ssh/get_agent.sh"
+source "$HOME/.ssh/get_agent.sh"
 
 # Dotfiles update nofication
 pushd > /dev/null
-if [ -d "dotfiles" ]; then
-    cd "dotfiles"
+if [ -d "$HOME/dotfiles" ]; then
+    cd "$HOME/dotfiles"
     if git rev-parse --git-dir > /dev/null 2>&1; then
         git remote update > /dev/null 2>&1
         LOCAL=$(git rev-parse @)
@@ -63,7 +63,7 @@ function update-dotfiles() {
     if git pull; then
         make install
         popd > /dev/null
-        echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
+        echo "Updates applied, restart terminals or run \"source $HOME/.zshrc\""
     fi
 }
 

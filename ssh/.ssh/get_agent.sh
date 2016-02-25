@@ -9,6 +9,7 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
         ssh-agent | sed 's/^echo/#echo/' > "$HOME/.ssh/agent"
         source "$HOME/.ssh/agent" 
         ssh-add
+        ssh-add "$HOME/.ssh/livebet_rsa"
     else
         source "$HOME/.ssh/agent" 
     fi

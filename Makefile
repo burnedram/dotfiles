@@ -9,7 +9,6 @@ git:
 	stow git
 
 ssh:
-	chmod 0600 ssh/.ssh/*_rsa
 	stow ssh
 
 vim:

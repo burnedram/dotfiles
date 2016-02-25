@@ -63,7 +63,8 @@ function update-dotfiles() {
     if git pull; then
         make install
         popd > /dev/null
-        echo "Updates applied, restart terminals or run \"source $HOME/.zshrc\""
+        echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
+        echo "Dotfiles updated, restart terminal or run \"source ~/.zshrc\"" | write $(whoami)
     fi
 }
 

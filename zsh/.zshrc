@@ -93,6 +93,11 @@ PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROM
 RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
 
 function precmd() {
+    local branch=""
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        branch=" [%{$fg_bold[cyan]%}$(git rev-parse --abbrev-ref HEAD)%{$reset_color%}]"
+    fi
+    STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}$branch"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
     local rainbow=""
     for i in {000..${#RAINBOWPROMPT}}; do
         rainbow="$rainbow%{%{[38;5;$(((i+RAINBOWCOLOR)%RAINBOWMAX + RAINBOWMIN))m%}%}${RAINBOWPROMPT:$i:1}"

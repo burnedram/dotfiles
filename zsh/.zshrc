@@ -31,7 +31,7 @@ if [ -s "$HOME/.zshrc_local" ]; then
 fi
 
 # Start or connect to a ssh-agent
-source "$HOME/.ssh/get_agent.sh"
+"$HOME/.ssh/get_agent.sh"
 
 # Dotfiles update nofication
 pushd > /dev/null
@@ -73,7 +73,7 @@ RAINBOWMIN=22
 RAINBOWMAX=$((231 - RAINBOWMIN))
 RAINBOWCOLOR=0
 HOSTNAMESTRING="$(print -P "%m")"
-HOSTNAMECOLOR="$(echo $((0x$(echo $HOSTNAMESTRING | md5sum | cut -c1-8) % RAINBOWMAX)))"
+HOSTNAMECOLOR="$((0x$(echo $HOSTNAMESTRING | md5sum | cut -c1-8) % RAINBOWMAX))"
 RAINBOWHOSTNAME="%{%{[38;5;${HOSTNAMECOLOR}m%}%}$HOSTNAMESTRING"
 STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
 

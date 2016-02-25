@@ -67,6 +67,16 @@ function update-dotfiles() {
     fi
 }
 
+function update-remote-dotfiles() {
+    for remote in klotet janner livebet; do
+        if [ "$remote" = "$HOST" ]; then
+            continue
+        fi
+        echo "Updating host $remote"
+        ssh "$remote" "source .zshrc && update-dotfiles"
+    done
+}
+
 # RAINBOW COLORS
 RAINBOWPROMPT="$(print -P "%n")"
 RAINBOWMIN=22

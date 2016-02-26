@@ -1,4 +1,4 @@
-.PHONY: install cygwin git ssh vim zsh hooks
+.PHONY: install cygwin git ssh vim zsh hooks tmux
 
 install: cygwin git ssh vim zsh hooks
 
@@ -19,3 +19,6 @@ zsh:
 
 hooks:
 	stow -t .git/hooks hooks
+
+tmux:
+	stow tmux

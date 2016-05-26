@@ -1,0 +1,3 @@
+#compdef title
+
+_arguments "1: :(--no-title)"

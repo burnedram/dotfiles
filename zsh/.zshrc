@@ -9,6 +9,8 @@ bindkey -v
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/Rafael/.zshrc'
 
+# Add auto completion for my funcs
+fpath=(~/.zsh/autocomp $fpath)
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
@@ -106,5 +108,20 @@ function precmd() {
         RAINBOWCOLOR=0
     fi
     PROMPT="$rainbow%{$reset_color%}@$RAINBOWHOSTNAME $STATICPROMPT"
+    if $NOTITLE; then
+        print -Pn "\e]0;$(fc -ln -1)\a"
+    fi
 }
 # END RAINBOW COLORS
+
+NOTITLE=true
+function title() {
+    if (( $# == 0 )); then
+        echo "usage: title [--no-title|TITLE]"
+    elif [ "$1" = "--no-title" ]; then
+        NOTITLE=true
+    else
+        NOTITLE=false
+        print -Pn "\e]0;$1\a"
+    fi
+}

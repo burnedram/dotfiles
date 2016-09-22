@@ -36,28 +36,30 @@ fi
 source "$HOME/.ssh/get_agent.sh"
 
 # Dotfiles update nofication
-pushd > /dev/null
-if [ -d "$HOME/dotfiles" ]; then
-    cd "$HOME/dotfiles"
-    if git rev-parse --git-dir > /dev/null 2>&1; then
-        git remote update > /dev/null 2>&1
-        LOCAL=$(git rev-parse @)
-        REMOTE=$(git rev-parse @{u})
-        BASE=$(git merge-base @ @{u})
+check_and_notify_dotfiles() {
+    if [ -d "$HOME/dotfiles" ]; then
+        cd "$HOME/dotfiles"
+        if git rev-parse --git-dir > /dev/null 2>&1; then
+            git remote update > /dev/null 2>&1
+            LOCAL=$(git rev-parse @)
+            REMOTE=$(git rev-parse @{u})
+            BASE=$(git merge-base @ @{u})
 
-        if [ $LOCAL = $REMOTE ]; then
-            #echo "Up-to-date"
-        elif [ $LOCAL = $BASE ]; then
-            echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
+            if [ $LOCAL = $REMOTE ]; then
+                #echo "Up-to-date"
+            elif [ $LOCAL = $BASE ]; then
+                echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
+            fi
+            #elif [ $REMOTE = $BASE ]; then
+            #    echo "Need to push"
+            #else
+            #    echo "Diverged"
+            #fi
         fi
-        #elif [ $REMOTE = $BASE ]; then
-        #    echo "Need to push"
-        #else
-        #    echo "Diverged"
-        #fi
     fi
-fi
-popd > /dev/null
+}
+check_and_notify_dotfiles &
+unset -f check_and_notify_dotfiles
 
 function update-dotfiles() {
     pushd > /dev/null

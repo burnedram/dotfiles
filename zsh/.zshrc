@@ -58,7 +58,7 @@ check_and_notify_dotfiles() {
         fi
     fi
 }
-check_and_notify_dotfiles &
+(check_and_notify_dotfiles &)
 unset -f check_and_notify_dotfiles
 
 function update-dotfiles() {

@@ -20,3 +20,5 @@ if [ -s "$HOME/.ssh/agent" ]; then
 else
     new_agent
 fi
+
+unset -f new_agent

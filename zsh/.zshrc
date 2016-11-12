@@ -83,6 +83,7 @@ function update-remote-dotfiles() {
 }
 
 # RAINBOW COLORS
+RAINBOW=""
 RAINBOWPROMPT="$(print -P "%n")"
 RAINBOWMIN=22
 RAINBOWMAX=$((231 - RAINBOWMIN))
@@ -96,25 +97,55 @@ PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROM
 RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
 
 function precmd() {
+    local branchname=""
     local branch=""
     if git rev-parse --git-dir > /dev/null 2>&1; then
-        branch=" [%{$fg_bold[cyan]%}$(git rev-parse --abbrev-ref HEAD)%{$reset_color%}]"
+        branchname=$(git rev-parse --abbrev-ref HEAD)
+        branch=" [%{$fg_bold[cyan]%}$branchname%{$reset_color%}]"
     fi
     STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}$branch"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
-    local rainbow=""
+    updaterainbow
+    updateprompt
+    updatetitle "[${TTY#/dev/}] $(whoami)@$(hostname) $(pwd) [$branchname]"
+}
+
+function preexec() {
+    updatetitle "$1"
+}
+
+function updaterainbow() {
+    RAINBOW=""
     for i in {000..${#RAINBOWPROMPT}}; do
-        rainbow="$rainbow%{%{[38;5;$(((i+RAINBOWCOLOR)%RAINBOWMAX + RAINBOWMIN))m%}%}${RAINBOWPROMPT:$i:1}"
+        RAINBOW+="%{%{[38;5;$(((i+RAINBOWCOLOR)%RAINBOWMAX + RAINBOWMIN))m%}%}${RAINBOWPROMPT:$i:1}"
     done
     ((RAINBOWCOLOR++))
     if [ "$RAINBOWCOLOR" -gt "$RAINBOWMAX" ]; then
         RAINBOWCOLOR=0
     fi
-    PROMPT="$rainbow%{$reset_color%}@$RAINBOWHOSTNAME $STATICPROMPT"
-    if $NOTITLE; then
-        print -Pn "\e]0;$(fc -ln -1)\a"
+}
+
+function updateprompt() {
+    PROMPT="$RAINBOW%{$reset_color%}@$RAINBOWHOSTNAME $STATICPROMPT"
+}
+
+function updatetitle() {
+    if (( $# != 0 )) && $NOTITLE; then
+        print -Pn "\e]0;$1\a"
     fi
 }
 # END RAINBOW COLORS
+
+# ON EDIT BUFFER CHANGES
+function self-insert() {
+    zle .self-insert
+    updaterainbow
+    updateprompt
+    zle .reset-prompt
+}
+zle -N self-insert
+
+# TODO on backspace/delete
+# END ON EDIT BUFFER CHANGES
 
 NOTITLE=true
 function title() {

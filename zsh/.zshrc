@@ -180,7 +180,21 @@ function self-insert() {
 }
 zle -N self-insert
 
-# TODO on backspace/delete
+function vi-backward-delete-char() {
+    zle .vi-backward-delete-char
+    updaterainbow
+    updateprompt
+    zle .reset-prompt
+}
+zle -N vi-backward-delete-char
+
+function vi-delete-char() {
+    updaterainbow
+    updateprompt
+    zle .reset-prompt
+    zle .vi-delete-char
+}
+zle -N vi-delete-char
 # END ON EDIT BUFFER CHANGES
 
 NOTITLE=true

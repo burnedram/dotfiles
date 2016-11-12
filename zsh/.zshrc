@@ -89,8 +89,9 @@ function precmd() {
     local git_string=""
     if check_is_git; then
         local branch="$(git rev-parse --abbrev-ref HEAD)"
-        branch_no_color=" [$branch]"
-        branch_color=" [%{$fg_bold[cyan]%}$branch%{$reset_color%}]"
+	local commit="$(git rev-parse --short HEAD)"
+        branch_no_color=" [$branch@$commit]"
+        branch_color=" [%{$fg_bold[cyan]%}$branch%{$reset_color%}@%{$fg_bold[yellow]%}$commit%{$reset_color%}]"
 
         # Up-to-date/ahead/behind/diverged
         gitstatus="$(get_git_status)"

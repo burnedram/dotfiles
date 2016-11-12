@@ -39,27 +39,14 @@ source "$HOME/.ssh/get_agent.sh"
 check_and_notify_dotfiles() {
     if [ -d "$HOME/dotfiles" ]; then
         cd "$HOME/dotfiles"
-        if git rev-parse --git-dir > /dev/null 2>&1; then
-            git remote update > /dev/null 2>&1
-            LOCAL=$(git rev-parse @)
-            REMOTE=$(git rev-parse @{u})
-            BASE=$(git merge-base @ @{u})
-
-            if [ $LOCAL = $REMOTE ]; then
-                #echo "Up-to-date"
-            elif [ $LOCAL = $BASE ]; then
+        if check_is_git; then
+            git fetch -all > /dev/null 2>&1
+            if [ "$(get_git_status)" = "Behind" ]; then
                 echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
             fi
-            #elif [ $REMOTE = $BASE ]; then
-            #    echo "Need to push"
-            #else
-            #    echo "Diverged"
-            #fi
         fi
     fi
 }
-(check_and_notify_dotfiles &)
-unset -f check_and_notify_dotfiles
 
 function update-dotfiles() {
     pushd > /dev/null
@@ -97,16 +84,64 @@ PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROM
 RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
 
 function precmd() {
-    local branchname=""
-    local branch=""
-    if git rev-parse --git-dir > /dev/null 2>&1; then
-        branchname=$(git rev-parse --abbrev-ref HEAD)
-        branch=" [%{$fg_bold[cyan]%}$branchname%{$reset_color%}]"
+    local branch_no_color=""
+    local branch_color=""
+    local git_string=""
+    if check_is_git; then
+        local branch="$(git rev-parse --abbrev-ref HEAD)"
+        branch_no_color=" [$branch]"
+        branch_color=" [%{$fg_bold[cyan]%}$branch%{$reset_color%}]"
+
+        # Up-to-date/ahead/behind/diverged
+        gitstatus="$(get_git_status)"
+
+        # Check for staged/unstaged files
+        local gitstaged=""
+        if check_git_staged; then
+            gitstaged="%{$fg_no_bold[green]%}S%{$reset_color%}"
+        fi
+        local gitunstaged=""
+        if check_git_unstaged; then
+            gitunstaged="%{$fg_no_bold[red]%}U%{$reset_color%}"
+        fi
+        local gitus="$(join_by / $gitstaged $gitunstaged)"
+        if [ ! -z "$gitus" ]; then
+            gitus=" [$gitus]"
+        fi
+
+        if [ "$gitstatus" = "Up-to-date" ]; then
+            git_string="$branch_color $gitstatus$gitus"
+        else
+            # Include commit difference
+            local gitcommits
+            case "$gitstatus" in
+                Ahead)
+                    gitcommits=$(get_git_commits_ahead) 
+                    if [ $gitcommits -eq 1 ]; then
+                        gitcommits="$gitcommits commit"
+                    else
+                        gitcommits="$gitcommits commits"
+                    fi
+                    ;;
+                Behind)
+                    gitcommits=$(get_git_commits_behind)
+                    if [ $gitcommits -eq 1 ]; then
+                        gitcommits="$gitcommits commit"
+                    else
+                        gitcommits="$gitcommits commits"
+                    fi
+                    ;;
+                Diverged)
+                    gitcommits="-$(get_git_commits_behind)/+$(get_git_commits_ahead) commits"
+                    ;;
+            esac
+            git_string="$branch_color $gitstatus $gitcommits$gitus"
+        fi
     fi
-    STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}$branch"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
+    STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}$git_string"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
     updaterainbow
     updateprompt
-    updatetitle "[${TTY#/dev/}] $(whoami)@$(hostname) $(pwd) [$branchname]"
+    updatetitle "[${TTY#/dev/}] $(whoami)@$(hostname) $(pwd)$branch_no_color"
 }
 
 function preexec() {
@@ -158,3 +193,62 @@ function title() {
         print -Pn "\e]0;$1\a"
     fi
 }
+
+# GIT CHECKS
+function check_is_git() {
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function get_git_status() {
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse @{u})
+    BASE=$(git merge-base @ @{u})
+
+    if [ $LOCAL = $REMOTE ]; then
+        echo "Up-to-date"
+    elif [ $LOCAL = $BASE ]; then
+        echo "Behind"
+    elif [ $REMOTE = $BASE ]; then
+        echo "Ahead"
+    else
+        echo "Diverged"
+    fi
+}
+
+function check_git_unstaged() {
+    if git diff-files --quiet --ignore-submodules --; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function check_git_staged() {
+    if git diff-index --cached --quiet HEAD --ignore-submodules --; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function get_git_commits_ahead() {
+    git rev-list @{u}.. --count --ignore-submodules
+}
+
+function get_git_commits_behind() {
+    git rev-list ..@{u} --count --ignore-submodules
+}
+# END GIT CHECKS
+
+function join_by { 
+    local IFS="$1"
+    shift
+    echo "$*"
+}
+# Run dotfiles checker
+(check_and_notify_dotfiles &)
+unset -f check_and_notify_dotfiles

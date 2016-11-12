@@ -17,8 +17,5 @@ vim:
 zsh:
 	stow zsh
 
-hooks:
-	stow -t .git/hooks hooks
-
 tmux:
 	stow tmux

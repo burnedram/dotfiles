@@ -1,22 +1,27 @@
-.PHONY: install cygwin git ssh vim zsh hooks tmux
-
+.PHONY: install
 install: cygwin git ssh vim zsh hooks tmux nvim
 
+.PHONY: cygwin
 cygwin:
 	stow cygwin
 
+.PHONY: git
 git:
 	stow git
 
+.PHONY: ssh
 ssh:
 	stow ssh
 
+.PHONY: vim
 vim:
 	stow vim
 
+.PHONY: zsh
 zsh:
 	stow zsh
 
+.PHONY: tmux
 tmux:
 	stow tmux
 

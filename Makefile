@@ -1,5 +1,5 @@
 .PHONY: install
-install: cygwin git ssh vim zsh hooks tmux nvim
+install: cygwin git ssh vim zsh tmux nvim
 
 .PHONY: cygwin
 cygwin:

@@ -59,6 +59,11 @@ call dein#add('neomake/neomake')
 "let g:neomake_verbose = 3
 "let g:neomake_logfile = expand('~/neomake_logfile')
 
+"Comment stuff out
+call dein#add('tpope/vim-commentary')
+autocmd FileType c setlocal commentstring=//\ %s
+autocmd FileType cpp setlocal commentstring=//\ %s
+
 call dein#end()
 
 syntax on

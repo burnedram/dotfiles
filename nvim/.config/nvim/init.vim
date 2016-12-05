@@ -62,6 +62,12 @@ call dein#add('neomake/neomake')
 "Comment stuff out
 call dein#add('tomtom/tcomment_vim')
 
+"Surround stuff
+call dein#add('tpope/vim-surround')
+
+"Used by e.g. vim-surround
+call dein#add('tpope/vim-repeat')
+
 call dein#end()
 
 syntax on

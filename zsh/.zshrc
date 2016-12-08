@@ -146,7 +146,7 @@ function precmd() {
 }
 
 function preexec() {
-    updatetitle "$1"
+    #updatetitle "$1"
 }
 
 function updaterainbow() {

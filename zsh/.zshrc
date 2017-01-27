@@ -41,7 +41,7 @@ check_and_notify_dotfiles() {
         pushd &> /dev/null
         cd "$HOME/dotfiles"
         if check_is_git; then
-            git fetch --all > /dev/null 2>&1
+            git fetch --all &> /dev/null
             if [ "$(get_git_status)" = "Behind" ]; then
                 echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
             fi
@@ -51,11 +51,11 @@ check_and_notify_dotfiles() {
 }
 
 function update-dotfiles() {
-    pushd > /dev/null
+    pushd &> /dev/null
     cd "$HOME/dotfiles"
     if git pull; then
         make install
-        popd > /dev/null
+        popd &> /dev/null
         echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
         echo "Dotfiles updated, restart terminal or run \"source ~/.zshrc\"" | write $(whoami)
     fi
@@ -213,7 +213,7 @@ function title() {
 
 # GIT CHECKS
 function check_is_git() {
-    if git rev-parse --git-dir > /dev/null 2>&1; then
+    if git rev-parse --git-dir &> /dev/null; then
         return 0
     else
         return 1

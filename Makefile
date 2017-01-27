@@ -12,6 +12,7 @@ git:
 .PHONY: ssh
 ssh:
 	stow ssh
+	chmod 600 ssh/.ssh/config
 
 .PHONY: vim
 vim:

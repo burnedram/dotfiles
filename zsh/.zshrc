@@ -38,13 +38,15 @@ source "$HOME/.ssh/get_agent.sh"
 # Dotfiles update nofication
 check_and_notify_dotfiles() {
     if [ -d "$HOME/dotfiles" ]; then
+        pushd &> /dev/null
         cd "$HOME/dotfiles"
         if check_is_git; then
-            git fetch -all > /dev/null 2>&1
+            git fetch --all > /dev/null 2>&1
             if [ "$(get_git_status)" = "Behind" ]; then
                 echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
             fi
         fi
+        popd &> /dev/null
     fi
 }
 

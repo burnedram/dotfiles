@@ -1,0 +1,80 @@
+#!/usr/bin/python3
+import argparse
+import os
+import subprocess
+
+def main():
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("-t", "--host", default="klotet",
+            help="upload target")
+    argparser.add_argument("-p", "--port", default=22, type=int,
+            help="ssh/scp port")
+    argparser.add_argument("-d", "--destination", default="/",
+            help="destination folder")
+    argparser.add_argument("--overwrite", action="store_true",
+            help="overwrite existing files")
+    argparser.add_argument("files", nargs="+",
+            help="file(s) to upload")
+    args = argparser.parse_args()
+
+    if not args.destination.startswith("/"):
+        args.destination = "/" + args.destination
+    if not args.destination.endswith("/"):
+        args.destination = args.destination + "/"
+
+    files = []
+    allOk = True
+    for f in args.files:
+        f = os.path.abspath(f)
+        files.append(f)
+        if not os.path.exists(f):
+            print("ERROR: File \"{}\" does not exist".format(f))
+            allOk = False
+    if not allOk:
+        return
+
+    print("Creating temporary folder...")
+    mktempCall = ["ssh", "-p", str(args.port), "-t", args.host, "mktemp", "-dt", "dump.XXXXXXXXXX"]
+    tmpDir = subprocess.check_output(mktempCall).decode("utf-8").rstrip()
+    print(tmpDir)
+
+    print("Uploading...")
+    scpCall = ["rsync", "-ae", "ssh -p " + str(args.port), "--chmod", "644", "--progress"]
+    scpCall.extend(args.files)
+    scpCall.append(args.host + ":" + tmpDir)
+    subprocess.check_call(scpCall)
+
+    tmpFiles = list(map(lambda f: tmpDir + "/" + os.path.basename(f), args.files))
+    sudos = []
+
+    chownCall = ["chown", "-R", "root:root"]
+    chownCall.extend(tmpFiles)
+    sudos.append(chownCall)
+
+    chmodCall = ["chmod", "-R", "+r,u+w,go-w,-x+X"]
+    chmodCall.extend(tmpFiles)
+    sudos.append(chmodCall)
+
+    mkdirCall = ["mkdir", "-p", "/var/www/dump" + args.destination]
+    sudos.append(mkdirCall)
+
+    mvCall = ["rsync", "-a", "--progress"]
+    mvCall.extend(tmpFiles)
+    mvCall.append("/var/www/dump" + args.destination)
+    sudos.append(mvCall)
+
+    rmCall = ["rm", "-rf", tmpDir]
+    sudos.append(rmCall)
+
+    print("Moving into destination folder and cleaning up...")
+    sudos = map(lambda call: quote(call), sudos)
+    sudoCall = ["ssh", "-p", str(args.port), "-t", args.host, "sudo", "sh", "-c", '"' + ";".join(sudos) + '"']
+    subprocess.check_call(sudoCall)
+
+    print("Done.")
+
+def quote(items):
+    return "'" + "' '".join(items) + "'"
+
+if __name__ == "__main__":
+    main()

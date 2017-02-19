@@ -1,5 +1,5 @@
 .PHONY: install
-install: cygwin git ssh vim zsh tmux nvim wsl
+install: cygwin git ssh vim zsh tmux nvim wsl commands
 
 .PHONY: cygwin
 cygwin:
@@ -46,3 +46,9 @@ wsl:
 	else \
 		echo Not running BashOnWindows; \
 	fi
+
+.PHONY: commands
+commands:
+	sudo chown -R root:root commands
+	sudo chmod -R 755 commands
+	sudo ln -s $(abspath commands)/* /usr/local/bin

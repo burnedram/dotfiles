@@ -68,7 +68,16 @@ call dein#add('tpope/vim-surround')
 "Used by e.g. vim-surround
 call dein#add('tpope/vim-repeat')
 
+"Pugjs syntax
+call dein#add('digitaltoad/vim-pug')
+
+"Typescript syntax and tsserver integration
+call dein#add('Quramy/tsuquyomi')
+call dein#add('leafgarland/typescript-vim')
+
 call dein#end()
+
+autocmd FileType make setlocal noexpandtab
 
 syntax on
 set shiftwidth=4

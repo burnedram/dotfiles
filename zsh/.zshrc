@@ -91,7 +91,7 @@ function precmd() {
     local git_string=""
     if check_is_git; then
         local branch="$(git rev-parse --abbrev-ref HEAD)"
-	local commit="$(git rev-parse --short HEAD)"
+	    local commit="$(git rev-parse --short HEAD)"
         branch_no_color=" [$branch@$commit]"
         branch_color=" [%{$fg_bold[cyan]%}$branch%{$reset_color%}@%{$fg_bold[yellow]%}$commit%{$reset_color%}]"
 
@@ -221,18 +221,21 @@ function check_is_git() {
 }
 
 function get_git_status() {
-    LOCAL=$(git rev-parse @)
-    REMOTE=$(git rev-parse @{u})
-    BASE=$(git merge-base @ @{u})
-
-    if [ $LOCAL = $REMOTE ]; then
-        echo "Up-to-date"
-    elif [ $LOCAL = $BASE ]; then
-        echo "Behind"
-    elif [ $REMOTE = $BASE ]; then
-        echo "Ahead"
+    REMOTE=$(git rev-parse @{u} 2>/dev/null)
+    if [[ $? != 0 ]]; then
+        echo "No upstream"
     else
-        echo "Diverged"
+        LOCAL=$(git rev-parse @)
+        BASE=$(git merge-base @ @{u} 2>/dev/null)
+        if [ $LOCAL = $REMOTE ]; then
+            echo "Up-to-date"
+        elif [ $LOCAL = $BASE ]; then
+            echo "Behind"
+        elif [ $REMOTE = $BASE ]; then
+            echo "Ahead"
+        else
+            echo "Diverged"
+        fi
     fi
 }
 

@@ -3,3 +3,6 @@
 	email = raffe_mohlin@hotmail.com
 [push]
 	default = simple
+[alias]
+    svn-merge = "!bash -c 'if [[ $# != 1 ]]; then echo \"Expected one argument\"; else echo \"Generating merge summary\"; MSG=$(git svn-squash-message $(git rev-parse --abbrev-ref @) $1); git merge --squash $1; git commit -m \"$MSG\"; git commit --amend; fi' bash"
+	svn-squash-message = "!bash -c 'echo \"Merged revision(s) $(git svn find-rev $(git rev-list $1..$2 | tail -n 1))-$(git svn find-rev $(git rev-list $1..$2 | head -n 1)) from $(dirname $(git config svn-remote.svn.branches | tr \\\":\\\" \\\"\\\\n\\\" | head -n 1))/$(git rev-parse --abbrev-ref $2):\n$(git checkout $2 &>/dev/null; git rev-list $1..$2 | tac | xargs -I \"{}\" git svn find-rev {} | xargs -I \"{}\" git svn log -r {} --oneline; git checkout $1 &>/dev/null)\"' bash"

@@ -42,7 +42,8 @@ wsl:
 		if ! diff wsl/minttyrc "/mnt/c/Program Files/wsl-terminal/etc/minttyrc" 1>/dev/null 2>&1; then \
 			echo "Replacing wsl-terminal's minttyrc..."; \
 			cp wsl/minttyrc "/mnt/c/Program Files/wsl-terminal/etc/minttyrc"; \
-		fi \
+		fi; \
+		cp wsl/WSL*.vbs "/mnt/c/Program Files/wsl-terminal"; \
 	else \
 		echo Not running BashOnWindows; \
 	fi

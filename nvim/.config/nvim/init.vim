@@ -85,3 +85,4 @@ set tabstop=4
 set expandtab
 set smartindent
 set number
+set mouse=a

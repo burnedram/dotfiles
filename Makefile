@@ -48,8 +48,9 @@ wsl:
 		echo Not running BashOnWindows; \
 	fi
 
-.PHONY: commands
-commands:
-	sudo chown -R root:root commands
-	sudo chmod -R 755 commands
-	sudo ln -s $(abspath commands)/* /usr/local/bin
+commands: $(addprefix /usr/local/bin/, $(patsubst commands/%,%,$(wildcard commands/*)))
+
+/usr/local/bin/%: commands/%
+	sudo chown root:root $^
+	sudo chmod 755 $^
+	sudo ln -s $(abspath $^) /usr/local/bin

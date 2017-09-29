@@ -75,6 +75,9 @@ call dein#add('digitaltoad/vim-pug')
 call dein#add('Quramy/tsuquyomi')
 call dein#add('leafgarland/typescript-vim')
 
+"HTML5 syntax and omnicompletion
+call dein#add('othree/html5.vim')
+
 call dein#end()
 
 autocmd FileType make setlocal noexpandtab

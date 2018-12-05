@@ -111,7 +111,11 @@ function precmd() {
         if check_git_unstaged; then
             gitunstaged="%{$fg_no_bold[red]%}U%{$reset_color%}"
         fi
-        local gitus="$(join_by / $gitstaged $gitunstaged)"
+        local gituntracked=""
+        if check_git_untracked; then
+            gituntracked="%{$fg_no_bold[red]%}T%{$reset_color%}"
+        fi
+        local gitus="$(join_by / $gitstaged $gitunstaged $gituntracked)"
         if [ ! -z "$gitus" ]; then
             gitus=" [$gitus]"
         fi
@@ -252,6 +256,14 @@ function get_git_status() {
 
 function check_git_unstaged() {
     if git diff-files --quiet --ignore-submodules --; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function check_git_untracked() {
+    if git ls-files --others --exclude-standard --directory --no-empty-directory | sed q1 &>/dev/null; then
         return 1
     else
         return 0

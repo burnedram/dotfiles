@@ -39,42 +39,6 @@ fi
 # Start or connect to a ssh-agent
 source "$HOME/.ssh/get_agent.sh"
 
-# Dotfiles update nofication
-check_and_notify_dotfiles() {
-    if [ -d "$HOME/dotfiles" ]; then
-        pushd &> /dev/null
-        cd "$HOME/dotfiles"
-        if check_is_git; then
-            git fetch --all &> /dev/null
-            if [ "$(get_git_status)" = "Behind" ]; then
-                echo " #### Dotfiles are out of date! Run update-dotfiles! #### "
-            fi
-        fi
-        popd &> /dev/null
-    fi
-}
-
-function update-dotfiles() {
-    pushd &> /dev/null
-    cd "$HOME/dotfiles"
-    if git pull; then
-        make install
-        popd &> /dev/null
-        echo "Updates applied, restart terminals or run \"source ~/.zshrc\""
-        echo "Dotfiles updated, restart terminal or run \"source ~/.zshrc\"" | write $(whoami)
-    fi
-}
-
-function update-remote-dotfiles() {
-    for remote in klotet janner livebet; do
-        if [ "$remote" = "$HOST" ]; then
-            continue
-        fi
-        echo "Updating host $remote"
-        ssh "$remote" "source .zshrc && update-dotfiles"
-    done
-}
-
 # RAINBOW COLORS
 RAINBOW=""
 RAINBOWPROMPT="$(print -P "%n")"
@@ -292,6 +256,3 @@ function join_by {
     shift
     echo "$*"
 }
-# Run dotfiles checker
-(check_and_notify_dotfiles &)
-unset -f check_and_notify_dotfiles

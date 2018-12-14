@@ -11,6 +11,7 @@ git:
 
 .PHONY: ssh
 ssh:
+	mkdir -p ../.ssh
 	stow ssh
 	chmod 600 ssh/.ssh/config
 
@@ -20,6 +21,7 @@ vim:
 
 .PHONY: zsh
 zsh:
+	mkdir -p ../.zsh/autocomp
 	stow zsh
 
 .PHONY: tmux
@@ -27,12 +29,13 @@ tmux:
 	stow tmux
 
 .PHONY: nvim
-nvim: ~/.nvim/dein/repos/github.com/Shougo/dein.vim
+nvim: ../.nvim/dein/repos/github.com/Shougo/dein.vim
+	mkdir -p ../.config
 	stow nvim
 
-~/.nvim/dein/repos/github.com/Shougo/dein.vim:
-	mkdir -p ~/.nvim/dein/repos/github.com/Shougo
-	git clone https://github.com/Shougo/dein.vim ~/.nvim/dein/repos/github.com/Shougo/dein.vim
+../.nvim/dein/repos/github.com/Shougo/dein.vim:
+	mkdir -p ../.nvim/dein/repos/github.com/Shougo
+	git clone https://github.com/Shougo/dein.vim ../.nvim/dein/repos/github.com/Shougo/dein.vim
 
 .PHONY: wsl
 wsl:

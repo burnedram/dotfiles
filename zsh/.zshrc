@@ -7,12 +7,12 @@ unsetopt appendhistory autocd beep extendedglob notify
 bindkey -v
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/Rafael/.zshrc'
+zstyle :compinstall filename '/home/affe/.zshrc'
 
 # Add auto completion for my funcs
 fpath=(~/.zsh/autocomp $fpath)
 autoload -Uz compinit
-compinit
+compinit -i
 # End of lines added by compinstall
 
 # Begin user settings

@@ -1,0 +1,7 @@
+Host chalmers
+    HostName remote11.chalmers.se
+    User mrafael
+
+Host klotet
+    HostName fistme.me
+    User affe

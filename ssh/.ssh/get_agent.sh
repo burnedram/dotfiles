@@ -4,7 +4,7 @@ new_agent() {
     #echo "Creating new ssh-agent"
     ssh-agent | sed 's/^echo/#echo/' > "$HOME/.ssh/agent"
     source "$HOME/.ssh/agent"
-    ssh-add
+    #ssh-add
 }
 
 if [ -s "$HOME/.ssh/agent" ]; then

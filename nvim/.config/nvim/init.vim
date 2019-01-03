@@ -78,6 +78,9 @@ call dein#add('leafgarland/typescript-vim')
 "HTML5 syntax and omnicompletion
 call dein#add('othree/html5.vim')
 
+"Python autocompletion
+call dein#add('zchee/deoplete-jedi')
+
 call dein#end()
 
 autocmd FileType make setlocal noexpandtab

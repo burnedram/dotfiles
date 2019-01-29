@@ -30,7 +30,7 @@ tmux:
 
 .PHONY: nvim
 nvim: ../.nvim/dein/repos/github.com/Shougo/dein.vim
-	mkdir -p ../.config
+	mkdir -p ../.config/nvim
 	stow nvim
 
 ../.nvim/dein/repos/github.com/Shougo/dein.vim:

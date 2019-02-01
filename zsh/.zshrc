@@ -110,11 +110,11 @@ function precmd() {
         fi
 
         # Check for unpushed tags
-        local rtags="$(git ls-remote --tags 2>/dev/null | grep -v '\^{}' | awk '{print $1}')"
-        local ltags="$(git show-ref --tags | awk '{print $1}')"
-        if ( [ -z "$rtags" ] && [ ! -z "$ltags" ] ) || [ ! -z "$(echo $ltags | grep -v -F "$rtags")" ]; then
-            git_string="$git_string %{$fg_no_bold[red]%}Unpushed tags%{$reset_color%}"
-        fi
+        #local rtags="$(git ls-remote --tags 2>/dev/null | grep -v '\^{}' | awk '{print $1}')"
+        #local ltags="$(git show-ref --tags | awk '{print $1}')"
+        #if ( [ -z "$rtags" ] && [ ! -z "$ltags" ] ) || [ ! -z "$(echo $ltags | grep -v -F "$rtags")" ]; then
+            #git_string="$git_string %{$fg_no_bold[red]%}Unpushed tags%{$reset_color%}"
+        #fi
     fi
     STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}$git_string"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
     updaterainbow

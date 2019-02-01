@@ -26,10 +26,6 @@ bindkey '^r' history-incremental-search-backward
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
-if command -v npm &>/dev/null; then
-    export PATH=~/.npm/bin:$PATH
-    npm config set prefix '~/.npm'
-fi
 
 # Load local config
 if [ -s "$HOME/.zshrc_local" ]; then

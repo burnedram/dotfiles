@@ -1,9 +1,5 @@
 .PHONY: install
-install: cygwin git ssh vim zsh tmux nvim commands
-
-.PHONY: cygwin
-cygwin:
-	stow cygwin
+install: ssh vim zsh tmux nvim commands
 
 .PHONY: git
 git:

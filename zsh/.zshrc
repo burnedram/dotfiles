@@ -80,34 +80,23 @@ function precmd() {
             gitus=" [$gitus]"
         fi
 
-        if [ "$gitstatus" = "Up-to-date" ]; then
-            git_string="$branch_color $gitstatus$gitus"
-        else
-            # Include commit difference
-            local gitcommits
-            case "$gitstatus" in
-                Ahead)
-                    gitcommits=$(get_git_commits_ahead) 
-                    if [ $gitcommits -eq 1 ]; then
-                        gitcommits="$gitcommits commit"
-                    else
-                        gitcommits="$gitcommits commits"
-                    fi
-                    ;;
-                Behind)
-                    gitcommits=$(get_git_commits_behind)
-                    if [ $gitcommits -eq 1 ]; then
-                        gitcommits="$gitcommits commit"
-                    else
-                        gitcommits="$gitcommits commits"
-                    fi
-                    ;;
-                Diverged)
-                    gitcommits="-$(get_git_commits_behind)/+$(get_git_commits_ahead) commits"
-                    ;;
-            esac
-            git_string="$branch_color $gitstatus $gitcommits$gitus"
-        fi
+        # Include commit difference
+        local gitcommits
+        case "$gitstatus" in
+            Up-to-date)
+                gitcommits="$(echo -n "\U2705")" # Green checkmark button
+                ;;
+            Ahead)
+                gitcommits="+%{$fg_no_bold[green]%}$(get_git_commits_ahead)%{$reset_color%}$(echo -n "\U2757")" # Interrobang
+                ;;
+            Behind)
+                gitcommits="-%{$fg_no_bold[red]%}$(get_git_commits_behind)%{$reset_color%}$(echo -n "\U2757")" # Interrobang
+                ;;
+            Diverged)
+                gitcommits="-%{$fg_no_bold[red]%}$(get_git_commits_behind)%{$reset_color%}$(echo -n "\U274C")+%{$fg_no_bold[green]%}$(get_git_commits_ahead)%{$reset_color%}" # Crossmark
+                ;;
+        esac
+        git_string="$branch_color$gitus $gitcommits"
 
         # Check for unpushed tags
         #local rtags="$(git ls-remote --tags 2>/dev/null | grep -v '\^{}' | awk '{print $1}')"

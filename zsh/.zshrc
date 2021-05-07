@@ -44,7 +44,7 @@ RAINBOWCOLOR=0
 HOSTNAMESTRING="$(print -P "%m")"
 HOSTNAMECOLOR="$((0x$(echo $HOSTNAMESTRING | md5sum | cut -c1-8) % RAINBOWMAX))"
 RAINBOWHOSTNAME="%{%{[38;5;${HOSTNAMECOLOR}m%}%}$HOSTNAMESTRING"
-STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
+STATICPROMPT="%{$fg_no_bold[yellow]%}%~%{$reset_color%}"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
 
 PROMPT="%{$fg_no_bold[cyan]%}%n%{$reset_color%}@%{$fg_bold[blue]%}%m $STATICPROMPT" 
 RPROMPT="%T [%(0?.%{$fg_no_bold[red]%}%?.%{%{[48;5;88m%}%}%?)%{%k%}%{$reset_color%}]"
@@ -116,7 +116,7 @@ function precmd() {
             #git_string="$git_string %{$fg_no_bold[red]%}Unpushed tags%{$reset_color%}"
         #fi
     fi
-    STATICPROMPT="%{$fg_no_bold[yellow]%}%d%{$reset_color%}$git_string"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
+    STATICPROMPT="%{$fg_no_bold[yellow]%}%~%{$reset_color%}$git_string"$'\n'"[%{$fg_bold[magenta]%}%y%{$reset_color%}]%(!.#.$) "
     updaterainbow
     updateprompt
     updatetitle "[${TTY#/dev/}] $(whoami)@$(hostname) $(pwd)$branch_no_color"
